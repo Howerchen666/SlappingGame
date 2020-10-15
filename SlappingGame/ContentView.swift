@@ -8,10 +8,14 @@
 
 import SwiftUI
 
-@available(iOS 14.0, *)
 struct ContentView: View {
     @State var firstExtended = false
     @State var secondExtended = false
+    
+    @State var firstScore = 0
+    @State var secondScore = 0
+    
+    @State var flipped = false
     
     @available(iOS 14.0, *)
     var body: some View {
@@ -20,7 +24,11 @@ struct ContentView: View {
                 .frame(width: 200, height: 200)
                 .offset(y: firstExtended ? 400 : 0)
                 .onTapGesture {
+                    guard !self.firstExtended else { return }
+                    
                     self.firstExtended = true
+                    
+                    checkFirst()
                     
                     delay(seconds: 0.5) {
                         self.firstExtended = false
@@ -28,18 +36,23 @@ struct ContentView: View {
                 }
                 .zIndex(10)
             Spacer()
-            Divider()
-            if #available(iOS 14.0, *) {
-                HStack {
-                    Text("Score:")
-                    Spacer()
-                }
-                .ignoresSafeArea()
-                .frame(minWidth: /*@START_MENU_TOKEN@*/0/*@END_MENU_TOKEN@*/, idealWidth: /*@START_MENU_TOKEN@*/100/*@END_MENU_TOKEN@*/, maxWidth: /*@START_MENU_TOKEN@*/.infinity/*@END_MENU_TOKEN@*/, minHeight: /*@START_MENU_TOKEN@*/0/*@END_MENU_TOKEN@*/, idealHeight: /*@START_MENU_TOKEN@*/100/*@END_MENU_TOKEN@*/, maxHeight: /*@START_MENU_TOKEN@*/.infinity/*@END_MENU_TOKEN@*/, alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/)
             
-            } else {
-                // Fallback on earlier versions
+            HStack {
+                Text("Score: \(firstScore)")
+                Spacer()
             }
+            .frame(height: 100.0)
+            .ignoresSafeArea()
+            
+            Divider()
+            
+            HStack {
+                Text("Score: \(secondScore)")
+                Spacer()
+            }
+            .rotationEffect(Angle(degrees: 180))
+            .frame(height: 100.0)
+            .ignoresSafeArea()
             
             Spacer()
             Rectangle()//TODO Change the rectangle to authentic image
@@ -54,9 +67,21 @@ struct ContentView: View {
                     }
             }
         }
-        .edgesIgnoringSafeArea(.all)
+        .rotationEffect(Angle(degrees: flipped ? 180 : 0))
+        .ignoresSafeArea()
     }
     
+    func checkFirst() {
+        if secondExtended == false {
+            if flipped {
+                secondScore += 1
+            } else {
+                firstScore += 1
+            }
+        } else {
+            flipped.toggle()
+        }
+    }
 }
 
 struct ContentView_Previews: PreviewProvider {
