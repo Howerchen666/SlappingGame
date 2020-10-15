@@ -74,9 +74,9 @@ struct ContentView: View {
     func checkFirst() {
         if secondExtended == false {
             if flipped {
-                secondScore += 1
-            } else {
                 firstScore += 1
+            } else {
+                secondScore += 1
             }
         } else {
             flipped.toggle()
