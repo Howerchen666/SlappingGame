@@ -17,11 +17,11 @@ struct ContentView: View {
     
     @State var flipped = false
     
-    @available(iOS 14.0, *)
     var body: some View {
         VStack{
             Rectangle() //TODO Change the rectangle to authentic image
                 .frame(width: 200, height: 200)
+                .foregroundColor(flipped ? .red : .primary)
                 .offset(y: firstExtended ? 400 : 0)
                 .onTapGesture {
                     guard !self.firstExtended else { return }
@@ -35,21 +35,24 @@ struct ContentView: View {
                     }
                 }
                 .zIndex(10)
+            
             Spacer()
             
             HStack {
-                Text("Score: \(firstScore)")
+                Text("Score: \(flipped ? secondScore : firstScore)")
                 Spacer()
             }
+            .padding(.horizontal)
             .frame(height: 100.0)
             .ignoresSafeArea()
             
             Divider()
             
             HStack {
-                Text("Score: \(secondScore)")
+                Text("Score: \(flipped ? firstScore : secondScore)")
                 Spacer()
             }
+            .padding(.horizontal)
             .rotationEffect(Angle(degrees: 180))
             .frame(height: 100.0)
             .ignoresSafeArea()
@@ -57,7 +60,7 @@ struct ContentView: View {
             Spacer()
             Rectangle()//TODO Change the rectangle to authentic image
                 .frame(width: 200, height:200)
-                .foregroundColor(.red)
+                .foregroundColor(flipped ? .primary : .red)
                 .offset(y: secondExtended ? 0 : -400)
                 .onTapGesture {
                     self.secondExtended = true
@@ -79,8 +82,15 @@ struct ContentView: View {
                 secondScore += 1
             }
         } else {
-            flipped.toggle()
+            flip()
         }
+    }
+    
+    func flip() {
+        secondExtended = false
+        firstExtended = false
+        
+        flipped.toggle()
     }
 }
 
